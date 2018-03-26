@@ -1,0 +1,1 @@
+class LargeSizeException(Exception): pass
