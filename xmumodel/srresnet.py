@@ -10,7 +10,7 @@ feature_size =64
 num_layers = 16
 '''
 class SRResNet(Model):
-    def buildModel(self):
+    def build_model(self):
         print("Building SRResNet...")
 
         #input layer
@@ -27,13 +27,13 @@ class SRResNet(Model):
         x= tl.ElementwiseLayer([x, conv_1], tf.add, name='res%d/res_add' % (self.num_layers+1))
         # B residual blacks end
 
-        x = utils.subpixelupsample(x, self.feature_size,self.scale)
+        x = utils.subpixel_upsample(x, self.feature_size, self.scale)
 
         # One final convolution on the upsampling output
         output = tl.Conv2d(x,self.output_channels,[1,1],act=tf.nn.tanh, name='lastLayer')
         # output = tl.Conv2d(x, self.output_channels, [1, 1], act=tf.nn.relu, name='lastLayer')
 
-        self.cacuLoss(output)
+        self.calculate_loss(output)
 
         # Tensorflow graph setup... session, saver, etc.
         self.sess = tf.Session()

@@ -17,7 +17,7 @@ class PixelResNet(Model):
     Pixel Recursive Super Resolution Network implementation
     From https://arxiv.org/pdf/1702.00783.pdf
     """
-    def buildModel(self):
+    def build_model(self):
         lr_images = self._normalize_color(self.input)
         hr_images = self._normalize_color(self.target)
 
@@ -25,7 +25,7 @@ class PixelResNet(Model):
         prior_logits = self.prior_network(hr_images)
 
         self.output = conditioning_logits
-        self.cacuLoss(conditioning_logits + prior_logits)
+        self.calculate_loss(conditioning_logits + prior_logits)
 
         # Tensorflow graph setup... session, saver, etc.
         conf = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
@@ -89,7 +89,7 @@ class PixelResNet(Model):
         """
         return image / 255.0 - 0.5
 
-    def cacuLoss(self, output):
+    def calculate_loss(self, output):
         self.loss = utils.softmax_cross_entropy_loss(output, self.target)
 
         # Scalar to keep track for loss

@@ -13,7 +13,7 @@ super-resolution of images as described in:
 (single scale baseline-style model)
 """
 class Xception(Model):
-    def buildModel(self):
+    def build_model(self):
         print("Building Xception...")
 
         #input layer
@@ -91,7 +91,7 @@ class Xception(Model):
         # net = tl.MaxPool2d(net, [3, 3],  padding='SAME', name='block13_max_pool')
         net = tl.ElementwiseLayer([net, residual],tf.add, name='block13_add')
         
-        net = utils.subpixelupsample(net, self.output_channels*2**2, scale=self.scale)
+        net = utils.subpixel_upsample(net, self.output_channels * 2 ** 2, scale=self.scale)
         output = net
         # output = tl.Conv2d(net, self.output_channels, [1, 1], act=tf.nn.relu, name='lastLayer')
 
@@ -108,7 +108,7 @@ class Xception(Model):
 
         self.output = output.outputs
 
-        self.cacuLoss(output)
+        self.calculate_loss(output)
 
         # Tensorflow graph setup... session, saver, etc.
         self.sess = tf.Session()

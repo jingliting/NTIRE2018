@@ -19,12 +19,12 @@ class CycleSR(Model):
         self.input_lr = tf.placeholder(tf.float32, [None, None, None, n_channels], name='input_A')
         self.input_hr = tf.placeholder(tf.float32, [None, None, None, n_channels], name='input_B')
 
-    def buildModel(self, n_channels=3):
+    def build_model(self, n_channels=3):
         print("Building CycleSR..")
 
         self.generator()
 
-        self.cacuLoss()
+        self.calculate_loss()
 
         # Tensorflow graph setup... session, saver, etc.
         conf = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
@@ -89,7 +89,7 @@ class CycleSR(Model):
             n = tl.ElementwiseLayer([x, nn], tf.add, name=name + '/add')
         return n
 
-    def cacuLoss(self):
+    def calculate_loss(self):
         # downsize_b = tf.image.resize_bicubic(self.norm_input_b, [48, 48])
         self.loss_lr = self.cycle_consistency_loss(self.norm_input_lr, self.fake_lr)
         self.loss_hr = self.cycle_consistency_loss(self.norm_input_hr, self.fake_hr)  # HR loss

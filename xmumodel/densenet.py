@@ -5,17 +5,18 @@ import tensorflow as tf
 import tensorlayer.layers as tl
 
 """
-An implementation of EDSR used for
-super-resolution of images as described in:
+An implementation of DenseNet used for super-resolution of images as described in:
 
 `Image Super-Resolution Using Dense Skip Connections`
 (http://openaccess.thecvf.com/content_ICCV_2017/papers/Tong_Image_Super-Resolution_Using_ICCV_2017_paper.pdf)
 
 """
 
+
 class DenseNet(Model):
-    def __init__(self,img_size=48,dense_block=8,growth_rate=16,bottleneck_size=256,num_layers=8,feature_size=16,scale=8,output_channels=3,is_subpixel=True,is_bn=True,seperate_channel=False):
-        Model.__init__(self, img_size,num_layers,feature_size,scale,output_channels)
+    def __init__(self, dense_block=8, growth_rate=16, bottleneck_size=256, output_channels=3,
+                 is_subpixel=True, is_bn=True, seperate_channel=False):
+        Model.__init__(self, output_channels)
 
         # the number of dense block
         self.dense_block = dense_block
@@ -29,7 +30,7 @@ class DenseNet(Model):
         # whether to use batch normalization
         self.is_bn = is_bn
 
-    def buildModel(self):
+    def build_model(self, num_layers=8, feature_size=16, scale=8):
         print("Building DenseNet...")
 
         # input layer
@@ -42,7 +43,7 @@ class DenseNet(Model):
         upscale_input = tl.Conv2d(x,self.feature_size, [7, 7], act = None, name = 'conv0')
         upscale_input = tl.MaxPool2d(upscale_input, [3,3], [2,2], name = 'maxpool0')
         '''
-        upscale_input = tl.Conv2d(x,self.feature_size, [3, 3], act = None, name = 'conv0')
+        upscale_input = tl.Conv2d(x, self.feature_size, [3, 3], act = None, name = 'conv0')
 
         # dense-net
         '''
@@ -103,7 +104,7 @@ class DenseNet(Model):
 
         self.output = output.outputs
 
-        self.cacuLoss(output)
+        self.calculate_loss(output)
 
         # Tensorflow graph setup... session, saver, etc.
         self.sess = tf.Session()

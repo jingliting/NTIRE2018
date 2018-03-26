@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from xmuutil.exception import LargeSizeException
+from xmuutil.transposed_conv2d_layer import TransposedConv2dLayer
 import tensorlayer.layers as tl
 from scipy.ndimage import rotate
 import pywt
@@ -56,21 +57,30 @@ def crop(img_lr, img_hr, wrg, hrg, scale = 8,is_random=True, row_index=0, col_in
         return img_lr[h_offset: h_end, w_offset: w_end], \
                img_hr[h_offset*scale:h_end*scale, w_offset*scale: w_end*scale]
 
-    tf.image.crop_and_resize()
+
+def deconv_upsample(x, n_features, kernel=(5, 5), scale=4):
+    x = TransposedConv2dLayer(x, n_features, kernel, (2, 2), name='deconv_1')
+    if scale == 4:
+        x = tl.Conv2d(x, n_features, (3, 3), act=tf.nn.relu, name='deconv_conv_1')
+        x = TransposedConv2dLayer(x, n_features, kernel, (2, 2), name='deconv_2')
+    if scale == 8:
+        x = tl.Conv2d(x, n_features, (3, 3), act=tf.nn.relu, name='deconv_conv_2')
+        x = TransposedConv2dLayer(x, n_features, kernel, (2, 2), name='deconv_3')
+    return x
 
 
-def subpixelupsample(x, feature_size, scale = 4):
+def subpixel_upsample(x, feature_size, scale = 4):
     # Upsample output of the convolution
-    x = tl.Conv2d(x, feature_size, [3, 3], act = None, name = 's1/1')
-    x = tl.SubpixelConv2d(x, scale = 2, act=tf.nn.relu, name='pixelshufferx2/1')
+    x = tl.Conv2d(x, feature_size, [3, 3], act=None, name='s1/1')
+    x = tl.SubpixelConv2d(x, scale=2, act=tf.nn.relu, name='pixelshufferx2/1')
 
-    x = tl.Conv2d(x, feature_size, [3, 3], act = None, name = 's1/2')
-    x = tl.SubpixelConv2d(x, scale = 2, act=tf.nn.relu, name='pixelshufferx2/2')
+    if scale == 4:
+        x = tl.Conv2d(x, feature_size, [3, 3], act=None, name='s1/2')
+        x = tl.SubpixelConv2d(x, scale = 2, act=tf.nn.relu, name='pixelshufferx2/2')
 
-    if scale > 4:
-        #X8
-        x = tl.Conv2d(x, feature_size, [3, 3], act = None, name = 's1/3')
-        x = tl.SubpixelConv2d(x, scale = 2, act=tf.nn.relu, name='pixelshufferx2/3')
+    if scale == 8:
+        x = tl.Conv2d(x, feature_size, [3, 3], act=None, name='s1/3')
+        x = tl.SubpixelConv2d(x, scale=2, act=tf.nn.relu, name='pixelshufferx2/3')
     return x
 
 
