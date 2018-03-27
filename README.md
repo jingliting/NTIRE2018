@@ -1,6 +1,5 @@
-# NTIRE2018
-## NTIRE 2018 challenge on image super-resolution[NTIRE challenge](http://www.vision.ee.ethz.ch/en/ntire18/) 
-In order to gauge the current state-of-the-art in (example-based) single-image super-resolution under realistic conditions, to compare and to promote different solutions we are organizing an [NTIRE challenge](http://www.vision.ee.ethz.ch/en/ntire18/) in conjunction with the CVPR 2018 conference.
+# [NTIRE2018 challenge](http://www.vision.ee.ethz.ch/en/ntire18/)
+## NTIRE 2018 challenge on image super-resolution
 
 The challenge has 3 tracks:
 ##### Track 1: bicubic downscaling x8 competition
