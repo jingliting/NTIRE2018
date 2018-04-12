@@ -41,7 +41,7 @@ class EDSR_Deconv(Model):
             x = utils.deconv_upsample(x, n_features, kernel=(5, 5), scale=scale)
 
         output = tl.Conv2d(x, self.n_channels, (1, 1), act=tf.nn.relu, name='bottleneck')
-        self.output = tf.clip_by_value(output.outputs, 0.0, 1.0)
+        self.output = tf.clip_by_value(output.outputs, 0.0, 1.0, name='output')
 
         self.calculate_loss(norm_target, self.output)
 

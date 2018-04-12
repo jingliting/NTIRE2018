@@ -47,7 +47,7 @@ class EDSR(Model):
 
         with tf.variable_scope("res_blocks"):
             for i in range(n_res_blocks):
-                x = self._res_block(x, n_features, (3, 3), scale=scaling_factor, layer=i)
+                x = self._res_block_1(x, n_features, (3, 3), scale=scaling_factor, layer=i)
             x = tl.Conv2d(x, n_features, (3, 3), name='res_c')
             x = tl.ElementwiseLayer([conv_1, x], tf.add, name='res_add')
 
@@ -55,7 +55,7 @@ class EDSR(Model):
             x = utils.subpixel_upsample(x, n_features, scale)
 
         output = tl.Conv2d(x, self.n_channels, (1, 1), act=tf.nn.relu, name='bottleneck')
-        self.output = tf.clip_by_value(output.outputs, 0.0, 1.0)
+        self.output = tf.clip_by_value(output.outputs, 0.0, 1.0, name='output')
 
         self.calculate_loss(norm_target, self.output)
 
@@ -65,7 +65,7 @@ class EDSR(Model):
         print("Done building!")
 
     @staticmethod
-    def _res_block(x, n_features=64, kernel_size=(3, 3), scale=1.0, layer=0):
+    def _res_block_1(x, n_features=64, kernel_size=(3, 3), scale=1.0, layer=0):
         """
         a resBlock is defined in the paper as (excuse the ugly ASCII graph)
                 x
@@ -87,7 +87,7 @@ class EDSR(Model):
         return n
 
     @staticmethod
-    def _res_block_1(x, n_features=64, kernel_size=(3, 3), scale=1.0, layer=0):
+    def _res_block_2(x, n_features=64, kernel_size=(3, 3), scale=1.0, layer=0):
         """
         a resBlock is defined in the paper as (excuse the ugly ASCII graph)
                 x
@@ -111,7 +111,7 @@ class EDSR(Model):
         return n
 
     @staticmethod
-    def _res_block_2(x, n_features=64, kernel_size=(3, 3), scale=1.0, layer=0):
+    def _res_block_3(x, n_features=64, kernel_size=(3, 3), scale=1.0, layer=0):
         """
         a resBlock is defined in the paper as (excuse the ugly ASCII graph)
                 x
@@ -129,6 +129,30 @@ class EDSR(Model):
         """
         nn = tl.Conv2d(x, n_features, kernel_size, act=tf.nn.relu, name='res%d/c1' % layer)
         nn = tl.Conv2d(nn, n_features, kernel_size, act=tf.nn.relu, name='res%d/c2' % layer)
+        nn = ScaleLayer(nn, scale, name='res%d/scale' % layer)
+        n = tl.ElementwiseLayer([x, nn], tf.add, name='res%d/res_add' % layer)
+        return n
+
+    @staticmethod
+    def _res_block_4(x, n_features=64, kernel_size=(3, 3), scale=1.0, layer=0):
+        """
+        a resBlock is defined in the paper as (excuse the ugly ASCII graph)
+                x
+                |\
+                | \
+                |  conv2d
+                |  relu
+                |  conv2d
+                |  relu
+                | /
+                |/
+                + (addition here)
+                |
+                result
+        """
+        nn = tl.Conv2d(x, 64, (1, 1), act=tf.nn.relu, name='res%d/c1' % layer)
+        nn = tl.Conv2d(nn, 64, kernel_size, act=tf.nn.relu, name='res%d/c2' % layer)
+        nn = tl.Conv2d(nn, n_features, (1, 1), act=None, name='res%d/bk' % layer)
         nn = ScaleLayer(nn, scale, name='res%d/scale' % layer)
         n = tl.ElementwiseLayer([x, nn], tf.add, name='res%d/res_add' % layer)
         return n

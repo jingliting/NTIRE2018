@@ -9,7 +9,7 @@ from xmuutil import utils
 class Model(object, metaclass=ABCMeta):
     def __init__(self, n_channels=3):
         self.n_channels = n_channels
-        self.input = tf.placeholder(tf.float32, [None, None, None, self.n_channels], name='lr_input')
+        self.input = tf.placeholder(tf.float32, [None, None, None, self.n_channels], name='input')
         self.target = tf.placeholder(tf.float32, [None, None, None, self.n_channels], name='hr_target')
         self.output = None
         self.train_op = None
@@ -42,7 +42,7 @@ class Model(object, metaclass=ABCMeta):
             print("Restored!")
 
     def calculate_loss(self, target=None, output=None):
-        self.loss = tf.reduce_mean(tf.losses.absolute_difference(target, output))
+        self.loss = tf.losses.absolute_difference(target, output)
         psnr = utils.psnr_tf(target, output, is_norm=True)
 
         tf.summary.scalar("loss", self.loss)
@@ -95,16 +95,8 @@ class Model(object, metaclass=ABCMeta):
             train_writer = tf.summary.FileWriter(log_dir+"/train", sess.graph)
             test_writer = tf.summary.FileWriter(log_dir+"/test", sess.graph)
 
-            test_feed = []
-            while True:
-                test_x, test_y = self.data.get_test_set(batch_size)
-                if test_x is not None and test_y is not None:
-                    test_feed.append({
-                            self.input: test_x,
-                            self.target: test_y
-                    })
-                else:
-                    break
+            test_x, test_y = self.data.get_test_set(batch_size)
+            test_feed = {self.input: test_x, self.target: test_y}
 
             for i in tqdm(range(iterations)):
                 if i != 0 and (i % decay_every == 0):
@@ -120,8 +112,10 @@ class Model(object, metaclass=ABCMeta):
                 train_writer.add_summary(summary, i)
 
                 if (i % test_every == 0) or (i == iterations):
-                    test_writer.add_summary(self.merged, i)
+                    t_summary = sess.run(self.merged, test_feed)
+                    test_writer.add_summary(t_summary, i)
                     self.save(save_dir, i)
 
+            self.save(save_dir, i)
             test_writer.close()
             train_writer.close()
