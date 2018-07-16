@@ -5,7 +5,7 @@ The challenge has 4 tracks:
 ##### Track 2: realistic downscaling x4 with mild conditions competition
 ##### Track 3: realistic downscaling x4 with difficult conditions competition
 ##### Track 4: wild downscaling x4 competition  
-The code uses TensorLayer https://tensorlayer.readthedocs.io/en/stable/. Note that the model is based on EDSR[https://arxiv.org/pdf/1707.02921.pdf] (Enhanced Deep Residual Networks for Single Image Super-Resolution), the championaion of NTIRE2017. We optimized the original EDSR model from three aspects: data augmentation, redesigning up-sampling module and adjusting residual block to tackle track1. Inspired from CycleGAN, we proposed a novel network structure: CycleSR for track2, 3, 4 since the down-sampling methods were unknown.
+The code uses TensorLayer https://tensorlayer.readthedocs.io/en/stable/. Note that the model is based on [EDSR](https://arxiv.org/pdf/1707.02921.pdf) (Enhanced Deep Residual Networks for Single Image Super-Resolution), the championaion of NTIRE2017. We optimized the original EDSR model from three aspects: data augmentation, redesigning up-sampling module and adjusting residual block to tackle track1. Inspired from CycleGAN, we proposed a novel network structure: CycleSR for track2, 3, 4 since the down-sampling methods were unknown.
 
 ## Requirements
 + python3
