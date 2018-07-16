@@ -22,8 +22,13 @@ Place all the images from that dataset into a directory under this one.
 + Datasets in 2018: [DIV2K](https://competitions.codalab.org/competitions/18015#learn_the_details)
 
 ## Training
-The model is designed to support the input images of any size both in training and evaluating stage. Thus you needn't worry about image size. To train, see train.py file for specific parameter definition and run      
-python3 train.py     
+The model is designed to support the input images of any size both in training and evaluating stage. Thus you needn't worry about image size. To train, see train.py script for specific parameter definitions and run      
+$ python3 train.py     
 In order to view stats during training, simply run    
-tensorboard --logdir your_train_log_directory         
+$ tensorboard --logdir your_train_log_directory         
 The trained model will be saved in the directory you passed in.    
+
+## Evaluating performance
+To evaluate the performance of a model, you can use the predict.py script where the validation dataset is required. Run    
+$ python3 predict.py 
+The test.py script was prepared for submission in testing phase and you can ignore it.
