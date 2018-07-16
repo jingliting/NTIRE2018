@@ -29,6 +29,6 @@ $ tensorboard --logdir your_train_log_directory
 The trained model will be saved in the directory you passed in.    
 
 ## Evaluating performance
-To evaluate the performance of a model, you can use the predict.py script where the validation dataset is required. Run    
-$ python3 predict.py 
-The test.py script was prepared for submission in testing phase and you can ignore it.
+To evaluate the performance of a model, you can use the predict.py script where the validation dataset is required. Run        
+$ python3 predict.py    
+The test.py script was prepared for submission in testing phase and you can ignore it.     
