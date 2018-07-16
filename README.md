@@ -5,7 +5,7 @@ The challenge has 4 tracks:
 ##### Track 2: realistic downscaling x4 with mild conditions competition
 ##### Track 3: realistic downscaling x4 with difficult conditions competition
 ##### Track 4: wild downscaling x4 competition  
-The code uses TensorLayer https://tensorlayer.readthedocs.io/en/stable/. Note that the original experiments were done using torch-autograd, we have so far validated that CIFAR-10 experiments are exactly reproducible in PyTorch, and are in process of doing so for ImageNet (results are very slightly worse in PyTorch, due to hyperparameters).
+The code uses TensorLayer https://tensorlayer.readthedocs.io/en/stable/. Note that the model is based on EDSR[https://arxiv.org/pdf/1707.02921.pdf] (Enhanced Deep Residual Networks for Single Image Super-Resolution), the championaion of NTIRE2017. We optimized the original EDSR model from three aspects: data augmentation, redesigning up-sampling module and adjusting residual block to tackle track1. Inspired from CycleGAN, we proposed a novel network structure: CycleSR for track2, 3, 4 since the down-sampling methods were unknown.
 
 ## Requirements
 + python3
@@ -16,14 +16,12 @@ The code uses TensorLayer https://tensorlayer.readthedocs.io/en/stable/. Note th
 + argparse
 
 ## Downloading datasets
+Download a dataset of images.       
+Place all the images from that dataset into a directory under this one.    
 + Datasets in 2017 for pre-training: [DIV2K2017](https://data.vision.ee.ethz.ch/cvl/DIV2K/)
 + Datasets in 2018: [DIV2K](https://competitions.codalab.org/competitions/18015#learn_the_details)
 
-
 ## Training
-In order to train, you'll have to do a few things...
-
-Download a dataset of images (due to my computational limitations, I've used General-100)
-Place all the images from that dataset into a directory under this one
-run python train.py --dataset data_dir where data_dir is the directory containing your images
-In order to view stats during training (image previews, scalar for loss), simply run tensorboard --logdir your_save_directory where your_save_directory is the directory you passed in as the save directory argument for training (saved_models by default)
+The model is designed to support the input images of any size both in training and evaluating stage. Thus you needn't worry about image size. To train, see train.py file for specific parameter definition and run python3 train.py.    
+In order to view stats during training, simply run tensorboard --logdir your_train_log_directory.   
+The trained model will be saved in the directory you passed in.    
