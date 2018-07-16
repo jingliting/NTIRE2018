@@ -1,10 +1,10 @@
-## Code for NTIRE [NTIRE2018 challenge](http://www.vision.ee.ethz.ch/en/ntire18/) on image super-resolution
+## NTIRE2018 on image super-resolution
+TensorFlow code for NTIRE2018 [NTIRE2018 challenge](http://www.vision.ee.ethz.ch/en/ntire18/) on image super-resolution.
 The challenge has 4 tracks:
 ##### Track 1: bicubic downscaling x8 competition
 ##### Track 2: realistic downscaling x4 with mild conditions competition
 ##### Track 3: realistic downscaling x4 with difficult conditions competition
-##### Track 4: wild downscaling x4 competition
-The 
+##### Track 4: wild downscaling x4 competition  
 
 ## Downloading datasets
 + (Datasets in 2017 for pre-training: [DIV2K2017](https://data.vision.ee.ethz.ch/cvl/DIV2K/))
@@ -26,10 +26,4 @@ $ python eval_image_classifier.py \
 GROUNDTRUTH_DIR = data/DIV2K/DIV2K_valid_LR_x8 # Example
 DATA_DIR = data/DIV2K/DIV2K_valid_HR # Example
 CHECKPOINT_DIR = result/ckpt  # Example
-$ python3 predict.py \
-    --groundtruthdir= \
-    --datadir=${DATA_DIR} \
-    --postfixlen=2 \
-    --reusedir=${CHECKPOINT_DIR} \
-    --step=100000 \
-    --outdir=out
+$ python3 predict.py 
